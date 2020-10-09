@@ -4,22 +4,28 @@ import { InjectModel } from "@nestjs/mongoose";
 import { PaginateModel } from 'mongoose';
 
 import { Product } from "./interfaces/product.interface";
-import { CreateProductDTO } from "./dto/product.dto";
+import { CreateProductDTO, PaginationDTO } from "./dto/product.dto";
 
 @Injectable()
 export class ProductService {
 
     constructor(@InjectModel('Product_JavierMontano') private readonly productModel: PaginateModel<Product>){}
 
-    async getProducts(page=1, limit=5): Promise<any>{
-        const options = {
-            populate: [
-                // Your foreign key fields to populate
-            ],
-            page: Number(page),
-            limit: Number(limit),
-        };
-        const products = await this.productModel.paginate({}, options);
+    async getProducts(paginationDTO: PaginationDTO): Promise<any>{
+        let products
+        if(!paginationDTO.page && !paginationDTO.limit){
+             products = await this.productModel.find()
+        }else{
+            const options = {
+                populate: [
+                    // Your foreign key fields to populate
+                ],
+                page: Number(paginationDTO.page),
+                limit: Number(paginationDTO.limit),
+            };
+             products = await this.productModel.paginate({}, options);
+        }
+     
         
         return products;
     }

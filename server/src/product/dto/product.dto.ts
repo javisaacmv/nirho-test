@@ -6,3 +6,7 @@ export class CreateProductDTO {
     Status: boolean;
     TimeStamp: Date;
 }
+export class PaginationDTO {
+    page: number;
+    limit: number;
+}
